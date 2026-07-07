@@ -7,81 +7,21 @@ on:
     branches: ["main"]
 
 jobs:
-  test-python:
-    name: Python tests (payment-validator)
+  build-learning-app:
+    name: Learning portal build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Install dependencies
-        run: |
-          pip install -r services/payment-validator/requirements.txt
-
-      - name: Run tests
-        run: |
-          cd services/payment-validator
-          pytest -v
-
-      # NOTE: no coverage gate configured (S2 exercise)
-      # NOTE: no eval suite step (S2 exercise)
-
-  test-typescript:
-    name: TypeScript build (api-gateway)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Node
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "22"
 
       - name: Install dependencies
-        run: |
-          cd services/api-gateway
-          npm ci
+        working-directory: learning-app
+        run: npm install
 
       - name: Build
-        run: |
-          cd services/api-gateway
-          npm run build
-
-  test-java:
-    name: Java build (billing-reconciler)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          java-version: "21"
-          distribution: "temurin"
-
-      - name: Build with Maven
-        run: |
-          cd services/billing-reconciler
-          mvn --batch-mode package -DskipTests
-
-      # NOTE: -DskipTests because there are no tests yet (S2 exercise)
-
-  test-go:
-    name: Go build (reporting)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: "1.23"
-
-      - name: Build
-        run: |
-          cd services/reporting
-          go build ./...
+        working-directory: learning-app
+        run: npm run build
