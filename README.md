@@ -29,7 +29,6 @@ Exercises, hints, quizzes, reference solutions, and the PayFlow legend
 - [Playgrounds](#playgrounds)
 - [Curriculum](#curriculum)
 - [Repository map](#repository-map)
-- [Known issues](#known-issues-intentional)
 - [Quick start checklist](#quick-start-checklist)
 
 ---
@@ -349,13 +348,15 @@ ai_sandbox/
 +-- docs/
 |   +-- adr/            Architecture Decision Records
 |   +-- issues/         Sample harness tickets
-+-- harness/            Reference harness (incomplete by design)
-+-- services/           Stub microservices
-+-- AGENTS.md           Intentionally incomplete (S2)
++-- harness/            Reference harness (scenario stub for exercises)
++-- services/           PayFlow scenario stubs (not your working codebase)
++-- AGENTS.md           Example file referenced in Section 2 exercises
 +-- .github/            CI and issue templates
 ```
 
-### Stub services
+The folders `harness/`, `services/`, and related files are **scenario material** for reading tasks and comparing solutions. They are deliberately incomplete in the exercise briefs (for example: no eval gate in S3, no `constitution.md` until you write one in S2). You are not expected to fix those stubs in this repo. Build and validate your work in a [Sports Hub playground](#playgrounds).
+
+### Stub services (scenario only)
 
 | Service | Language | Role |
 |---|---|---|
@@ -365,24 +366,6 @@ ai_sandbox/
 | `reporting/` | Go | Lightweight reporting |
 
 Implement and test in your **playground**, not in this repo.
-
----
-
-## Known issues (intentional)
-
-These gaps are the learning surface. Do not fix them before the relevant exercise.
-
-| Gap | Exercise |
-|---|---|
-| `AGENTS.md`: advisory only, no machine-verifiable gates | S2 |
-| `constitution.md`: missing | S2 |
-| `HARNESS.md`: missing | S9 |
-| `harness/config.yaml`: same model for all tasks | S6 |
-| `harness/run.py`: no eval gate or cost tracking | S3, S6 |
-| `fraud_detector.py`: low test coverage | S3 |
-| `payments.ts`: unsanitised input | S7 |
-| `billing-reconciler/`: no tests | S3 |
-| `ci.yml`: no eval suite | S3 |
 
 ---
 
