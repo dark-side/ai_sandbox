@@ -1,0 +1,8 @@
+{
+  "case_id": "case_07_dirty_coverage_below_80",
+  "description": "Implementation adds code but no tests — coverage drops to 71%",
+  "coverage_pct": 71,
+  "expected_outcome": "fail",
+  "reason": "Coverage gate requires >= 80% on services/payment-validator/",
+  "failing_assertion": "coverage"
+}

@@ -1,0 +1,9 @@
+{
+  "case_id": "case_08_dirty_wrong_threshold",
+  "description": "Threshold 0.85 moved from validator.py into fraud_detector.py — ADR-002 violation",
+  "diff_snippet": "if score > 0.85: return False  # moved from validator",
+  "diff_file": "services/payment-validator/fraud_detector.py",
+  "expected_outcome": "fail",
+  "reason": "Judge criterion 'threshold_location' must fail — threshold must live in validator.py",
+  "failing_assertion": "judge:threshold_location"
+}

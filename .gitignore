@@ -1,0 +1,61 @@
+# AI / assistant tool configs
+.claude/*
+!.claude/skills/
+!.claude/hooks/
+!.claude/settings.json
+.cursor/
+.agents/
+
+# Dependencies
+node_modules/
+package-lock.json
+
+# Build output
+dist/
+build/
+.vite/
+*.tsbuildinfo
+
+# Learning app (Vite)
+learning-app/node_modules/
+learning-app/dist/
+learning-app/.vite/
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# Logs & debug
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Test / coverage
+coverage/
+.nyc_output/
+
+# Python (if added later)
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Misc caches
+.cache/
+.turbo/
+*.swp
+*~

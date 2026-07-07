@@ -1,0 +1,50 @@
+# PayFlow Harness Configuration — Reference Solution (S6)
+#
+# Evidence-based routing derived from harness/evals/model_routing_analysis.md.
+# Task type now decides the model; non-blocking tasks go through the Batch API.
+
+default_model: claude-opus-4-6
+
+routing:
+  # Routed to small — eval pass rate within 2% tolerance of frontier
+  classify_ticket: claude-haiku-4-5-20251001
+  generate_commit_message: claude-haiku-4-5-20251001
+  generate_test_names: claude-haiku-4-5-20251001
+
+  # Frontier — 22-point quality gap on complex reasoning; keep regardless of cost
+  architectural_review: claude-opus-4-6
+
+  # Cascading — attempt mid-tier, escalate on trigger (see cascade block)
+  implement_feature: claude-sonnet-4-6
+
+cascade:
+  implement_feature:
+    attempt: claude-sonnet-4-6
+    escalate_to: claude-opus-4-6
+    triggers:
+      - scope_assertion_failed        # S7 scope hook returns non-zero
+      - judge_score_below: 0.7
+      - stop_reason: max_tokens
+
+routing_rule: >
+  if eval_pass_rate(small) >= eval_pass_rate(frontier) - 0.02: route to small.
+  The 2% tolerance accounts for eval variance across runs.
+
+batch_api:
+  # Non-blocking tasks — result not needed synchronously; ~50% cheaper
+  enabled: true
+  tasks:
+    - generate_commit_message
+    - nightly_report
+
+budget:
+  monthly_alert_usd: 3200       # alert when projected spend crosses the current baseline
+  per_ticket_p95_multiplier: 1.5  # flag any ticket costing > 1.5x the p95 baseline (S8)
+
+anthropic_api:
+  timeout_seconds: 120
+  max_retries: 2
+
+output:
+  write_to_branch: true
+  branch_prefix: "ai/"

@@ -1,0 +1,12 @@
+{
+  "case_id": "case_01_clean",
+  "description": "Valid payment: standard USD transaction, low fraud score",
+  "input": {
+    "amount": "250.00",
+    "currency_code": "USD",
+    "card_number": "4532015112830366",
+    "merchant_id": "MERCH_001"
+  },
+  "expected_outcome": "pass",
+  "reason": "All fields valid, amount within range, fraud score well below threshold"
+}

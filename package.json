@@ -1,0 +1,9 @@
+{
+  "name": "payflow-ai-practice-root",
+  "version": "2.0.0",
+  "private": true,
+  "scripts": {
+    "start": "./start-learning-app.sh"
+  },
+  "description": "Root package for easy launch of the PayFlow AI Practice Learning App"
+}

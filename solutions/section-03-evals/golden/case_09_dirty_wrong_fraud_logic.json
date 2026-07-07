@@ -1,0 +1,8 @@
+{
+  "case_id": "case_09_dirty_wrong_fraud_logic",
+  "description": "Plausible-but-wrong: agent adds a new scoring rule that returns a boolean instead of float",
+  "diff_snippet": "def score(...) -> bool:  # changed return type",
+  "expected_outcome": "fail",
+  "reason": "Judge criterion 'return_type_preserved' must fail",
+  "failing_assertion": "judge:return_type_preserved"
+}

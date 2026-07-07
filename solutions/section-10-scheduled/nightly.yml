@@ -1,0 +1,89 @@
+name: Nightly Harness Run
+
+on:
+  schedule:
+    - cron: '0 23 * * 1-5'   # 11pm UTC, Monday–Friday
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run — no API calls, no files written'
+        type: boolean
+        default: true
+      max_tickets:
+        description: 'Max tickets to process (default 10)'
+        type: number
+        default: 10
+
+env:
+  MAX_TICKETS: ${{ inputs.max_tickets || 10 }}
+  DRY_RUN: ${{ inputs.dry_run || 'false' }}
+
+jobs:
+  nightly:
+    name: Nightly ticket processing
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r services/payment-validator/requirements.txt
+
+      - name: Verify all guardrails are registered
+        run: python harness/evals/verify_guardrails.py
+        # Fails fast if any pre-tool hook is missing or unregistered
+
+      - name: Fetch agent-ready tickets
+        id: fetch_tickets
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python harness/nightly_fetch_tickets.py \
+            --label agent-ready \
+            --exclude-modified-within 2h \
+            --max ${{ env.MAX_TICKETS }} \
+            --output /tmp/tickets.json
+          echo "count=$(python3 -c "import json; print(len(json.load(open('/tmp/tickets.json'))))")" >> $GITHUB_OUTPUT
+
+      - name: Run harness on tickets
+        if: steps.fetch_tickets.outputs.count != '0'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          DRY_RUN: ${{ env.DRY_RUN }}
+        run: |
+          python harness/nightly_run.py \
+            --tickets /tmp/tickets.json \
+            --output-dir harness/runs/$(date +%Y-%m-%d) \
+            ${{ env.DRY_RUN == 'true' && '--dry-run' || '' }}
+
+      - name: Check quality and cost alerts
+        if: steps.fetch_tickets.outputs.count != '0' && env.DRY_RUN == 'false'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          python harness/nightly_alerts.py \
+            --run-dir harness/runs/$(date +%Y-%m-%d) \
+            --quality-threshold 0.85 \
+            --cost-spike-multiplier 1.5
+
+      - name: Post morning summary
+        if: always() && env.DRY_RUN == 'false'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          python harness/nightly_summary.py \
+            --run-dir harness/runs/$(date +%Y-%m-%d)
+
+      - name: Upload run artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nightly-run-${{ github.run_id }}
+          path: harness/runs/
+          retention-days: 30

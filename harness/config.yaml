@@ -1,0 +1,33 @@
+# PayFlow Harness Configuration
+#
+# INTENTIONAL ISSUE (S5 exercise):
+#   All task types route to the same frontier model.
+#   Approximately 60% of harness invocations are classification tasks that
+#   could run on a small/mid-tier model at ~10x lower cost.
+#   This is why monthly token spend is 40% above projection.
+
+model: claude-opus-4-6
+
+tasks:
+  classify_ticket: claude-opus-4-6    # Should be: claude-haiku-4-5-20251001
+  implement_feature: claude-opus-4-6  # Frontier — OK
+  architectural_review: claude-opus-4-6  # Frontier — OK
+  generate_commit_message: claude-opus-4-6  # Should be: claude-haiku-4-5-20251001
+  generate_test_names: claude-opus-4-6      # Should be: claude-haiku-4-5-20251001
+
+# No routing policy — task type is ignored at runtime
+#
+# Routing rule (to implement in S6):
+#   if eval_pass_rate(small) >= eval_pass_rate(frontier) - 0.02: route to small
+#   The 2% tolerance accounts for eval variance across runs.
+# No cost_limit or budget_alert configuration
+# No batch_api configuration for non-blocking tasks
+
+anthropic_api:
+  timeout_seconds: 120
+  max_retries: 2
+
+output:
+  write_to_branch: true
+  branch_prefix: "ai/"
+  # No scope restriction — agent can write to any file in the repo

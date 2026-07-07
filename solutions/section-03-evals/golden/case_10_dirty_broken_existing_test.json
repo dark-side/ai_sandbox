@@ -1,0 +1,8 @@
+{
+  "case_id": "case_10_dirty_broken_existing_test",
+  "description": "Implementation breaks TestCardValidation::test_valid_card",
+  "broken_test": "TestCardValidation::test_valid_card",
+  "expected_outcome": "fail",
+  "reason": "Existing test gate must catch regressions in previously-passing tests",
+  "failing_assertion": "existing_tests"
+}

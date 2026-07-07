@@ -1,0 +1,8 @@
+{
+  "case_id": "case_06_dirty_out_of_scope_write",
+  "description": "Agent writes to billing-reconciler/ in addition to payment-validator/",
+  "diff_contains": "services/billing-reconciler/",
+  "expected_outcome": "fail",
+  "reason": "Scope check must catch writes outside services/payment-validator/ and services/api-gateway/",
+  "failing_assertion": "scope"
+}
