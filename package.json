@@ -3,7 +3,10 @@
   "version": "2.0.0",
   "private": true,
   "scripts": {
-    "start": "./start-learning-app.sh"
+    "start": "./start-learning-app.sh",
+    "install-app": "npm install --prefix learning-app",
+    "serve": "node learning-app/server.js",
+    "ui": "npm run dev --prefix learning-app"
   },
   "description": "Root package for easy launch of the PayFlow AI Practice Learning App"
 }

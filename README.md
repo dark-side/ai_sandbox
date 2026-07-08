@@ -160,6 +160,9 @@ sequenceDiagram
 brew install node
 ```
 
+> Per-OS setup (Ubuntu, Windows WSL, native Windows PowerShell) is in
+> [Setup by operating system](#setup-by-operating-system) below.
+
 ### Launch in 2 steps
 
 ```bash
@@ -178,6 +181,89 @@ npm start
 chmod +x start-learning-app.sh   # first time only
 ./start-learning-app.sh
 ```
+
+</details>
+
+### Setup by operating system
+
+`npm start` runs a bash launcher (`start-learning-app.sh`) that starts both servers and
+opens the browser. It works natively on **macOS**, **Linux**, and **Windows via WSL or Git
+Bash**. On **native Windows (PowerShell)** there is no bash, so use the two-command path below.
+
+<details>
+<summary><strong>macOS</strong></summary>
+
+```bash
+brew install node          # Node.js 18+ (skip if already installed)
+git clone https://github.com/dark-side/ai_sandbox.git
+cd ai_sandbox
+npm start
+```
+
+</details>
+
+<details>
+<summary><strong>Ubuntu / Debian Linux</strong></summary>
+
+```bash
+# Node.js 18+ from NodeSource (Ubuntu's apt node can be too old)
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt-get install -y nodejs git
+
+git clone https://github.com/dark-side/ai_sandbox.git
+cd ai_sandbox
+npm start
+```
+
+If `./start-learning-app.sh` reports `Permission denied`, run `chmod +x start-learning-app.sh` once.
+
+</details>
+
+<details>
+<summary><strong>Windows 10/11 — WSL (recommended)</strong></summary>
+
+WSL gives you a real Linux shell, so the one-command launcher works unchanged.
+
+```powershell
+# In PowerShell (admin), install WSL once, then reopen the Ubuntu terminal
+wsl --install
+```
+
+```bash
+# Inside the Ubuntu (WSL) terminal
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt-get install -y nodejs git
+git clone https://github.com/dark-side/ai_sandbox.git
+cd ai_sandbox
+npm start
+```
+
+</details>
+
+<details>
+<summary><strong>Windows 10/11 — native PowerShell (no WSL)</strong></summary>
+
+The bash launcher does not run in PowerShell. Start the two servers manually with the
+cross-platform npm scripts — use **two** terminals.
+
+```powershell
+# 1. Install Node.js 18+ from https://nodejs.org (or: winget install OpenJS.NodeJS.LTS)
+git clone https://github.com/dark-side/ai_sandbox.git
+cd ai_sandbox
+
+# 2. Install the portal's dependencies (first run only)
+npm run install-app
+
+# 3a. Terminal 1 — content API on port 3737
+npm run serve
+
+# 3b. Terminal 2 — UI dev server on port 5173
+npm run ui
+```
+
+Then open [http://localhost:5173](http://localhost:5173) in your browser.
+Press `Ctrl+C` in each terminal to stop. (These same `npm run serve` / `npm run ui`
+commands also work on macOS and Linux if you prefer running the servers separately.)
 
 </details>
 
@@ -234,7 +320,7 @@ Press **`Ctrl+C`** in the terminal. Both servers shut down cleanly.
 | Port in use | Script auto-kills stale processes; or `lsof -ti:5173 \| xargs kill -9` |
 | Browser did not open | Open [localhost:5173](http://localhost:5173) manually |
 | Blank page | `Ctrl+C`, delete `learning-app/node_modules`, then `npm start` |
-| Windows | Use `npm start` in Git Bash or WSL |
+| Windows | Use `npm start` in WSL or Git Bash; on native PowerShell use `npm run serve` + `npm run ui` (see [Setup by operating system](#setup-by-operating-system)) |
 
 </details>
 
